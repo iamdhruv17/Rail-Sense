@@ -1,0 +1,17 @@
+{
+  "name": "railsense",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": ["apps/*"],
+  "scripts": {
+    "dev": "concurrently --names \"SERVER,WEB\" --prefix-colors \"red,blue\" \"npm run dev --workspace=apps/server\" \"npm run dev --workspace=apps/web\"",
+    "dev:server": "npm run dev --workspace=apps/server",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "seed": "npm run seed --workspace=apps/server",
+    "setup": "npm run setup --workspace=apps/server",
+    "build": "npm run build --workspace=apps/web"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

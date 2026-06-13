@@ -19,9 +19,7 @@
 }
 
 /* ===== RESET & BASE ===== */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; font-size: 16px; }
-body {
+.marketing-page {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font);
@@ -29,9 +27,10 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
-a { color: inherit; text-decoration: none; }
-img, svg { display: block; max-width: 100%; }
-button { cursor: pointer; border: none; background: none; font-family: var(--font); }
+.marketing-page a { color: inherit; text-decoration: none; }
+.marketing-page img, .marketing-page svg { display: block; max-width: 100%; }
+.marketing-page button { cursor: pointer; border: none; background: none; font-family: var(--font); }
+
 
 .container {
   max-width: 1160px;

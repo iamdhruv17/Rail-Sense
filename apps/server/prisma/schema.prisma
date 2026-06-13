@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(cuid())
+  name          String
+  email         String         @unique
+  password      String
+  role          String         @default("PASSENGER")
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  PNRs          PNR[]
+  Notifications Notification[]
+}
+
+model Station {
+  id         String      @id @default(cuid())
+  code       String      @unique
+  name       String
+  city       String
+  lat        Float
+  lng        Float
+  platforms  Int         @default(4)
+  createdAt  DateTime    @default(now())
+  RouteStops RouteStop[]
+  Platforms  Platform[]
+}
+
+model Platform {
+  id        String   @id @default(cuid())
+  stationId String
+  number    Int
+  station   Station  @relation(fields: [stationId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Train {
+  id           String     @id @default(cuid())
+  number       String     @unique
+  name         String
+  type         String
+  totalCoaches Int        @default(20)
+  createdAt    DateTime   @default(now())
+  Routes       Route[]
+  TrainRuns    TrainRun[]
+  PNRs         PNR[]
+}
+
+model Route {
+  id        String      @id @default(cuid())
+  trainId   String
+  name      String      @default("Main Route")
+  train     Train       @relation(fields: [trainId], references: [id])
+  stops     RouteStop[]
+  createdAt DateTime    @default(now())
+}
+
+model RouteStop {
+  id                 String   @id @default(cuid())
+  routeId            String
+  stationId          String
+  stopOrder          Int
+  scheduledArrival   String?
+  scheduledDeparture String?
+  platformNumber     Int      @default(1)
+  cumulativeMinutes  Float    @default(0)
+  route              Route    @relation(fields: [routeId], references: [id])
+  station            Station  @relation(fields: [stationId], references: [id])
+  createdAt          DateTime @default(now())
+}
+
+model TrainRun {
+  id              String      @id @default(cuid())
+  trainId         String
+  date            String
+  status          String      @default("ON_TIME")
+  delayMinutes    Int         @default(0)
+  currentLat      Float?
+  currentLng      Float?
+  currentSpeed    Float       @default(0)
+  lastStationCode String?
+  nextStationCode String?
+  progressPercent Float       @default(0)
+  departedAt      DateTime    @default(now())
+  totalMinutes    Float       @default(600)
+  train           Train       @relation(fields: [trainId], references: [id])
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  AgentFlags      AgentFlag[]
+  PNRs            PNR[]
+}
+
+model AgentFlag {
+  id         String    @id @default(cuid())
+  trainRunId String
+  type       String
+  severity   String
+  reasoning  String
+  suggestion String
+  rawData    String
+  isResolved Boolean   @default(false)
+  resolvedBy String?
+  resolvedAt DateTime?
+  resolution String?
+  trainRun   TrainRun  @relation(fields: [trainRunId], references: [id])
+  createdAt  DateTime  @default(now())
+}
+
+model PNR {
+  id                  String   @id @default(cuid())
+  number              String   @unique
+  userId              String?
+  trainId             String
+  trainRunId          String
+  passengerName       String
+  coach               String
+  seat                String
+  class               String
+  boardingStationCode String
+  destinationCode     String
+  user                User?    @relation(fields: [userId], references: [id])
+  train               Train    @relation(fields: [trainId], references: [id])
+  trainRun            TrainRun @relation(fields: [trainRunId], references: [id])
+  createdAt           DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  type      String
+  isRead    Boolean  @default(false)
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
