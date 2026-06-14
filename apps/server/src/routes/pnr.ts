@@ -25,7 +25,7 @@ router.get('/:number', async (req, res, next) => {
         },
       },
     })
-    if (!pnr) return res.status(404).json({ error: 'PNR not found. Try: 4812657390' })
+    if (!pnr) return res.status(404).json({ error: 'PNR not found. Try: 129510001' })
     res.json(pnr)
   } catch (err) { next(err) }
 })

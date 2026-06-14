@@ -1,34 +1,50 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import { StatusBadge, SeverityBadge } from '@/components/ui/Badge'
 import { Spinner } from '@/components/ui/Spinner'
 import { pnrApi } from '@/lib/api'
 import { PNRData } from '@/lib/types'
 
-export default function PnrPage() {
+function PnrContent() {
+  const searchParams = useSearchParams()
+  const pnrParam = searchParams.get('pnr')
+
   const [pnrNumber, setPnrNumber] = useState('')
   const [pnrData, setPnrData] = useState<PNRData | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [subscribed, setSubscribed] = useState(false)
 
-  async function handleSearch(e: React.FormEvent) {
-    e.preventDefault()
-    if (!pnrNumber.trim()) return
+  // Trigger search on mount or when search param changes
+  useEffect(() => {
+    if (pnrParam) {
+      setPnrNumber(pnrParam)
+      triggerSearch(pnrParam)
+    }
+  }, [pnrParam])
+
+  async function triggerSearch(pnrVal: string) {
+    if (!pnrVal.trim()) return
     setError('')
     setLoading(true)
     setSubscribed(false)
     try {
-      const res = await pnrApi.lookup(pnrNumber.trim())
+      const res = await pnrApi.lookup(pnrVal.trim())
       setPnrData(res.data)
     } catch (err: any) {
-      setError(err.response?.data?.error || 'PNR not found. Try PNR: 4812657390')
+      setError(err.response?.data?.error || 'PNR not found. Try PNR: 129510001')
       setPnrData(null)
     } finally {
       setLoading(false)
     }
+  }
+
+  async function handleSearch(e: React.FormEvent) {
+    e.preventDefault()
+    triggerSearch(pnrNumber)
   }
 
   const stops = pnrData?.train?.route?.stops || []
@@ -56,7 +72,7 @@ export default function PnrPage() {
               maxLength={10}
               value={pnrNumber}
               onChange={(e) => setPnrNumber(e.target.value.replace(/\D/g, ''))}
-              placeholder="e.g. 4812657390"
+              placeholder="e.g. 129510001"
               className="flex-1 bg-bg-secondary border border-border rounded-lg px-4 py-2.5 text-sm text-text-primary focus:outline-none focus:border-accent-red/50 transition-colors"
             />
             <button
@@ -69,9 +85,9 @@ export default function PnrPage() {
           </form>
 
           <div className="text-xs text-text-dim">
-            Demo PNRs: <code className="bg-bg-secondary px-1.5 py-0.5 rounded text-text-muted">4812657390</code>,{' '}
-            <code className="bg-bg-secondary px-1.5 py-0.5 rounded text-text-muted">4812657391</code>,{' '}
-            <code className="bg-bg-secondary px-1.5 py-0.5 rounded text-text-muted">4812657392</code>
+            Demo PNRs: <code className="bg-bg-secondary px-1.5 py-0.5 rounded text-text-muted">129510001</code>,{' '}
+            <code className="bg-bg-secondary px-1.5 py-0.5 rounded text-text-muted">123010001</code>,{' '}
+            <code className="bg-bg-secondary px-1.5 py-0.5 rounded text-text-muted">120020001</code>
           </div>
         </div>
 
@@ -260,5 +276,20 @@ export default function PnrPage() {
         )}
       </div>
     </div>
+  )
+}
+
+export default function PnrPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-bg-primary text-text-primary flex flex-col justify-center items-center">
+        <Spinner size="lg" />
+        <p className="text-xs text-text-muted mt-2 font-semibold uppercase tracking-wider">
+          Initializing telemetry console...
+        </p>
+      </div>
+    }>
+      <PnrContent />
+    </Suspense>
   )
 }

@@ -2,13 +2,54 @@
 
 import { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { trainsApi } from '@/lib/api'
 import '@/app/marketing.css'
 
 export default function LandingPage() {
+  const router = useRouter()
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<'map' | 'agent' | 'pwa'>('map')
   const [activeFlowStep, setActiveFlowStep] = useState<number>(0)
+
+  const [searchTab, setSearchTab] = useState<'train' | 'pnr'>('train')
+  const [trainQuery, setTrainQuery] = useState('')
+  const [pnrQuery, setPnrQuery] = useState('')
+  const [searchError, setSearchError] = useState('')
+  const [liveTrainsCount, setLiveTrainsCount] = useState<number | null>(null)
+
+  function handleTrainSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!trainQuery.trim()) return
+    router.push(`/track?train=${encodeURIComponent(trainQuery.trim())}`)
+  }
+
+  function handlePnrSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    const trimmed = pnrQuery.trim()
+    if (!trimmed) return
+    if (trimmed.length !== 9 && trimmed.length !== 10) {
+      setSearchError('PNR number must be 9 or 10 digits')
+      return
+    }
+    router.push(`/track/pnr?pnr=${trimmed}`)
+  }
+
+  // Fetch live active trains count
+  useEffect(() => {
+    async function fetchLiveStats() {
+      try {
+        const res = await trainsApi.getAll()
+        if (res.data && Array.isArray(res.data)) {
+          setLiveTrainsCount(res.data.length)
+        }
+      } catch (err) {
+        console.error('Failed to fetch live stats for landing page:', err)
+      }
+    }
+    fetchLiveStats()
+  }, [])
   
   // Stats counters
   const [trainsCount, setTrainsCount] = useState(0)
@@ -362,9 +403,17 @@ export default function LandingPage() {
         </div>
 
         <div className="hero-content">
-          <div className="hero-badge">
-            <span className="badge-dot"></span>
-            FAR AWAY 2026 — India's Biggest International Hackathon
+          <div className="flex flex-wrap gap-3 justify-center mb-6">
+            <div className="hero-badge">
+              <span className="badge-dot"></span>
+              FAR AWAY 2026 — India's Biggest International Hackathon
+            </div>
+            {liveTrainsCount !== null && (
+              <div className="hero-badge" style={{ backgroundColor: 'rgba(16, 185, 129, 0.08)', borderColor: 'rgba(16, 185, 129, 0.25)', color: '#10B981' }}>
+                <span className="badge-dot" style={{ backgroundColor: '#10B981' }}></span>
+                {liveTrainsCount} Live Trains Connected
+              </div>
+            )}
           </div>
           <h1 className="hero-title">
             India's Railway,<br/>
@@ -375,6 +424,157 @@ export default function LandingPage() {
             before they happen, and keeps <strong>23 million daily passengers</strong> informed.
           </p>
           <p className="hero-subtagline">Real-time tracking. AI-powered operations. Zero delays left unexplained.</p>
+
+          {/* Live Search Widget */}
+          <div className="search-widget-container" style={{
+            maxWidth: '460px',
+            width: '100%',
+            margin: '2rem auto 2.5rem',
+            backgroundColor: 'rgba(13, 27, 46, 0.65)',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid #1E3A5F',
+            borderRadius: '16px',
+            padding: '1.25rem',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
+            textAlign: 'left',
+            position: 'relative',
+            zIndex: 20
+          }}>
+            <div className="flex" style={{ borderBottom: '1px solid #1E3A5F', marginBottom: '1rem' }}>
+              <button
+                type="button"
+                className="flex-1"
+                style={{
+                  paddingBottom: '0.75rem',
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  backgroundColor: 'transparent',
+                  color: searchTab === 'train' ? '#F0F4FF' : '#a0aec0',
+                  border: 'none',
+                  borderBottom: searchTab === 'train' ? '2px solid #E8213B' : '2px solid transparent',
+                  cursor: 'pointer',
+                  transition: 'color 0.2s',
+                  marginBottom: '-1px'
+                }}
+                onClick={() => { setSearchTab('train'); setSearchError(''); }}
+              >
+                Live Train Status
+              </button>
+              <button
+                type="button"
+                className="flex-1"
+                style={{
+                  paddingBottom: '0.75rem',
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  backgroundColor: 'transparent',
+                  color: searchTab === 'pnr' ? '#F0F4FF' : '#a0aec0',
+                  border: 'none',
+                  borderBottom: searchTab === 'pnr' ? '2px solid #E8213B' : '2px solid transparent',
+                  cursor: 'pointer',
+                  transition: 'color 0.2s',
+                  marginBottom: '-1px'
+                }}
+                onClick={() => { setSearchTab('pnr'); setSearchError(''); }}
+              >
+                PNR Telemetry Check
+              </button>
+            </div>
+
+            {searchTab === 'train' ? (
+              <form onSubmit={handleTrainSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                  <label style={{ fontSize: '10px', textTransform: 'uppercase', fontWeight: 700, color: 'rgba(240,244,255,0.4)', letterSpacing: '0.05em' }}>Train Number or Name</label>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <input
+                      type="text"
+                      placeholder="e.g. 12951 or Rajdhani"
+                      value={trainQuery}
+                      onChange={(e) => setTrainQuery(e.target.value)}
+                      style={{
+                        flex: 1,
+                        backgroundColor: '#060E1A',
+                        border: '1px solid #1E3A5F',
+                        borderRadius: '8px',
+                        padding: '0.6rem 0.8rem',
+                        fontSize: '0.875rem',
+                        color: '#F0F4FF',
+                        outline: 'none',
+                        transition: 'border-color 0.2s'
+                      }}
+                    />
+                    <button
+                      type="submit"
+                      style={{
+                        backgroundColor: '#E8213B',
+                        color: 'white',
+                        fontWeight: 600,
+                        border: 'none',
+                        borderRadius: '8px',
+                        padding: '0 1.25rem',
+                        fontSize: '0.875rem',
+                        cursor: 'pointer',
+                        transition: 'background-color 0.2s'
+                      }}
+                    >
+                      Search
+                    </button>
+                  </div>
+                </div>
+                {searchError && <p style={{ fontSize: '11px', color: '#E8213B', fontWeight: 600, margin: 0 }}>{searchError}</p>}
+                <div style={{ fontSize: '10px', color: 'rgba(240,244,255,0.4)' }}>
+                  Try seeded: <span style={{ textDecoration: 'underline', cursor: 'pointer', color: '#F0F4FF' }} onClick={() => setTrainQuery('12951')}>12951 (Mumbai Rajdhani)</span> or <span style={{ textDecoration: 'underline', cursor: 'pointer', color: '#F0F4FF' }} onClick={() => setTrainQuery('12301')}>12301</span>
+                </div>
+              </form>
+            ) : (
+              <form onSubmit={handlePnrSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                  <label style={{ fontSize: '10px', textTransform: 'uppercase', fontWeight: 700, color: 'rgba(240,244,255,0.4)', letterSpacing: '0.05em' }}>10-Digit PNR Number</label>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <input
+                      type="text"
+                      maxLength={10}
+                      placeholder="e.g. 129510001"
+                      value={pnrQuery}
+                      onChange={(e) => setPnrQuery(e.target.value.replace(/\D/g, ''))}
+                      style={{
+                        flex: 1,
+                        backgroundColor: '#060E1A',
+                        border: '1px solid #1E3A5F',
+                        borderRadius: '8px',
+                        padding: '0.6rem 0.8rem',
+                        fontSize: '0.875rem',
+                        color: '#F0F4FF',
+                        outline: 'none',
+                        transition: 'border-color 0.2s'
+                      }}
+                    />
+                    <button
+                      type="submit"
+                      style={{
+                        backgroundColor: '#E8213B',
+                        color: 'white',
+                        fontWeight: 600,
+                        border: 'none',
+                        borderRadius: '8px',
+                        padding: '0 1.25rem',
+                        fontSize: '0.875rem',
+                        cursor: 'pointer',
+                        transition: 'background-color 0.2s'
+                      }}
+                    >
+                      Check PNR
+                    </button>
+                  </div>
+                </div>
+                {searchError && <p style={{ fontSize: '11px', color: '#E8213B', fontWeight: 600, margin: 0 }}>{searchError}</p>}
+                <div style={{ fontSize: '10px', color: 'rgba(240,244,255,0.4)' }}>
+                  Try seeded PNRs: <span style={{ textDecoration: 'underline', cursor: 'pointer', color: '#F0F4FF' }} onClick={() => setPnrQuery('129510001')}>129510001</span> or <span style={{ textDecoration: 'underline', cursor: 'pointer', color: '#F0F4FF' }} onClick={() => setPnrQuery('123010001')}>123010001</span>
+                </div>
+              </form>
+            )}
+          </div>
+
           <div className="hero-ctas">
             <Link href="/track" className="btn-primary" id="see-demo-btn">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16"/></svg>

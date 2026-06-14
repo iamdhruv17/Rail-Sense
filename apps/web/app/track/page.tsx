@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState, useTransition } from 'react'
+import { useEffect, useState, useTransition, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import Navbar from '@/components/Navbar'
 import { StatusBadge, SeverityBadge } from '@/components/ui/Badge'
@@ -21,7 +22,10 @@ const LiveMap = dynamic(() => import('@/components/map/LiveMap'), {
   ),
 })
 
-export default function TrackPage() {
+function TrackContent() {
+  const searchParams = useSearchParams()
+  const trainParam = searchParams.get('train')
+
   const [positions, setPositions] = useState<TrainPosition[]>([])
   const [selectedTrainNum, setSelectedTrainNum] = useState<string | null>(null)
   const [trainDetail, setTrainDetail] = useState<TrainDetail | null>(null)
@@ -33,7 +37,7 @@ export default function TrackPage() {
 
   // Fetch initial trains list
   useEffect(() => {
-    async function loadTrains() {
+    const loadTrains = async () => {
       try {
         const res = await trainsApi.getAll()
         setPositions(res.data)
@@ -55,6 +59,13 @@ export default function TrackPage() {
       socket.off('trains:positions')
     }
   }, [])
+
+  // Handle train query parameter
+  useEffect(() => {
+    if (trainParam) {
+      setSelectedTrainNum(trainParam)
+    }
+  }, [trainParam])
 
   // Update selected train detail when train position updates OR selected train number changes
   useEffect(() => {
@@ -386,5 +397,20 @@ export default function TrackPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function TrackPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-bg-primary text-text-primary flex flex-col justify-center items-center">
+        <Spinner size="lg" />
+        <p className="text-xs text-text-muted mt-2 font-semibold uppercase tracking-wider">
+          Initializing tracking console...
+        </p>
+      </div>
+    }>
+      <TrackContent />
+    </Suspense>
   )
 }
