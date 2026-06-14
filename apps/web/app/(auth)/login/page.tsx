@@ -29,7 +29,22 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-bg-primary flex items-center justify-center p-4">
+    <div className="min-h-screen bg-bg-primary flex items-center justify-center p-4 relative">
+      <Link
+        href="/"
+        className="absolute top-6 left-6 md:top-8 md:left-8 inline-flex items-center gap-2 text-sm font-medium text-text-muted hover:text-text-primary transition-colors bg-bg-secondary/50 hover:bg-bg-secondary px-3.5 py-1.5 rounded-lg border border-border/50 hover:border-border-light backdrop-blur-md group"
+      >
+        <svg
+          className="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-1"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+        <span>Back to Home</span>
+      </Link>
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">

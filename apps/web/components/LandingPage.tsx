@@ -61,15 +61,8 @@ export default function LandingPage() {
     fetchLiveStats()
   }, [])
   
-  // Stats counters
-  const [trainsCount, setTrainsCount] = useState(0)
-  const [passengersCount, setPassengersCount] = useState(0)
-  const [refreshCycle, setRefreshCycle] = useState(0)
-  const [statsAnimated, setStatsAnimated] = useState(false)
-
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const flowDiagramRef = useRef<HTMLDivElement | null>(null)
-  const statsSectionRef = useRef<HTMLDivElement | null>(null)
 
   // Scroll handler for navbar
   useEffect(() => {
@@ -271,53 +264,7 @@ export default function LandingPage() {
     }
   }, [])
 
-  // Counter animations for stats
-  useEffect(() => {
-    const statsSection = statsSectionRef.current
-    if (!statsSection) return
 
-    const statsObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !statsAnimated) {
-            setStatsAnimated(true)
-            
-            // Animate Refresh Cycle (to 30)
-            let refreshStart = 0
-            const refreshTimer = setInterval(() => {
-              refreshStart += 1
-              setRefreshCycle(refreshStart)
-              if (refreshStart >= 30) clearInterval(refreshTimer)
-            }, 50)
-
-            // Animate Trains (to 13000)
-            let trainsStart = 0
-            const trainsTimer = setInterval(() => {
-              trainsStart += 400
-              if (trainsStart >= 13000) {
-                setTrainsCount(13000)
-                clearInterval(trainsTimer)
-              } else {
-                setTrainsCount(trainsStart)
-              }
-            }, 50)
-
-            // Animate Passengers (to 23)
-            let passengersStart = 0
-            const passengersTimer = setInterval(() => {
-              passengersStart += 1
-              setPassengersCount(passengersStart)
-              if (passengersStart >= 23) clearInterval(passengersTimer)
-            }, 70)
-          }
-        })
-      },
-      { threshold: 0.2 }
-    )
-
-    statsObserver.observe(statsSection)
-    return () => statsObserver.disconnect()
-  }, [statsAnimated])
 
   return (
     <div className="marketing-page">
@@ -357,8 +304,7 @@ export default function LandingPage() {
             <a href="#problem" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Problem</a>
             <a href="#solution" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Solution</a>
             <a href="#how-it-works" className="nav-link" onClick={() => setMobileMenuOpen(false)}>How It Works</a>
-            <a href="#tech" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Tech</a>
-            <a href="#team" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Team</a>
+
             {user ? (
               <>
                 <Link
@@ -1198,171 +1144,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* TECH STACK SECTION */}
-      <section className="tech-section section" id="tech" ref={statsSectionRef}>
-        <div className="container">
-          <div className="section-eyebrow reveal">ARCHITECTURE</div>
-          <h2 className="section-title reveal">Built to <span className="gradient-text">Scale.</span></h2>
-          <p className="section-subtitle reveal">Production-grade tech stack, built to handle India's scale from day one.</p>
-
-          <div className="tech-grid reveal" id="tech-grid">
-            <div className="tech-card" id="tech-nextjs">
-              <div className="tech-icon-wrap">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M11.572 0c-.176 0-.31.001-.358.007a19.76 19.76 0 0 1-.364.033C7.443.346 4.25 2.185 2.228 5.012a11.875 11.875 0 0 0-2.119 5.243c-.096.659-.108.854-.108 1.747s.012 1.089.108 1.748c.652 4.506 3.86 8.292 8.209 9.695.779.25 1.6.422 2.534.525.363.04 1.935.04 2.299 0 1.611-.178 2.977-.577 4.323-1.264.207-.106.247-.134.219-.158-.02-.013-.9-1.193-1.955-2.62l-1.919-2.592-2.404-3.558a338.739 338.739 0 0 0-2.422-3.556c-.009-.002-.018 1.579-.023 3.51-.007 3.38-.01 3.515-.052 3.595a.426.426 0 0 1-.206.214c-.075.037-.14.044-.495.044H7.81l-.108-.068a.438.438 0 0 1-.157-.171l-.05-.106.006-4.703.007-4.705.072-.092a.645.645 0 0 1 .174-.143c.096-.047.134-.051.54-.051.478 0 .558.018.682.154.035.038 1.337 1.999 2.895 4.361a10760.433 10760.433 0 0 0 4.735 7.17l1.9 2.879.096-.063a12.317 12.317 0 0 0 2.466-2.163 11.944 11.944 0 0 0 2.824-6.134c.096-.66.108-.854.108-1.748 0-.893-.012-1.088-.108-1.747-.652-4.506-3.859-8.292-8.208-9.695a12.597 12.597 0 0 0-2.499-.523A33.119 33.119 0 0 0 11.573 0z" fill="white"/></svg>
-              </div>
-              <span>Next.js</span>
-            </div>
-            <div className="tech-card" id="tech-nodejs">
-              <div className="tech-icon-wrap">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M12 1.85c-.27 0-.55.07-.78.2L3.78 6.35C3.3 6.6 3 7.1 3 7.64v8.72c0 .54.3 1.04.78 1.29l7.44 4.3c.23.13.5.2.78.2s.55-.07.78-.2l7.44-4.3c.48-.25.78-.75.78-1.29V7.64c0-.54-.3-1.04-.78-1.29l-7.44-4.3c-.23-.13-.5-.2-.78-.2z" fill="#3c873a"/><text x="12" y="16" textAnchor="middle" fill="white" fontSize="6" fontFamily="Inter" fontWeight="700">Node</text></svg>
-              </div>
-              <span>Node.js</span>
-            </div>
-            <div className="tech-card" id="tech-postgres">
-              <div className="tech-icon-wrap">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="6" rx="8" ry="3" stroke="#336791" strokeWidth="1.5" fill="none"/><path d="M4 6v6c0 1.66 3.58 3 8 3s8-1.34 8-3V6" stroke="#336791" strokeWidth="1.5" fill="none"/><path d="M4 12v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6" stroke="#336791" strokeWidth="1.5" fill="none"/><ellipse cx="12" cy="6" rx="8" ry="3" fill="#336791" opacity="0.3"/></svg>
-              </div>
-              <span>PostgreSQL</span>
-            </div>
-            <div className="tech-card" id="tech-prisma">
-              <div className="tech-icon-wrap">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M4 20L12 2l8 14-8 4L4 20z" fill="none" stroke="#5A67D8" strokeWidth="1.5" strokeLinejoin="round"/><path d="M12 2L4 20l8-4V2z" fill="#5A67D8" opacity="0.4"/></svg>
-              </div>
-              <span>Prisma</span>
-            </div>
-            <div className="tech-card" id="tech-socketio">
-              <div className="tech-icon-wrap">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="white" strokeWidth="1.5" fill="none"/><path d="M3 12c2-4 5-7 9-7" stroke="white" strokeWidth="1.5" strokeLinecap="round"/><path d="M21 12c-2 4-5 7-9 7" stroke="white" stroke-width="1.5" strokeLinecap="round"/></svg>
-              </div>
-              <span>Socket.io</span>
-            </div>
-            <div className="tech-card" id="tech-claude">
-              <div className="tech-icon-wrap">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14l-4-4 1.41-1.41L11 13.17l6.59-6.59L19 8l-8 8z" fill="#CC785C" opacity="0.9"/></svg>
-              </div>
-              <span>Claude AI</span>
-            </div>
-            <div className="tech-card" id="tech-leaflet">
-              <div className="tech-icon-wrap">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#1E9B31"/></svg>
-              </div>
-              <span>Leaflet.js</span>
-            </div>
-            <div className="tech-card" id="tech-tailwind">
-              <div className="tech-icon-wrap">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M12 6C9 6 7 7.5 6 10.5c1.5-2 3-2.75 4.5-2.25C11.34 8.53 11.84 9.06 12.38 9.63C13.26 10.57 14.3 11.7 16.5 11.7c3 0 5-1.5 6-4.5-1.5 2-3 2.75-4.5 2.25-.84-.28-1.34-.81-1.88-1.38C15.24 7.13 14.2 6 12 6zm-6 6c-3 0-5 1.5-6 4.5 1.5-2 3-2.75 4.5-2.25.84.28 1.34.81 1.88 1.38C7.26 16.57 8.3 17.7 10.5 17.7c3 0 5-1.5 6-4.5-1.5 2-3 2.75-4.5 2.25-.84-.28-1.34-.81-1.88-1.38C9.24 13.13 8.2 12 6 12z" fill="#38BDF8"/></svg>
-              </div>
-              <span>Tailwind CSS</span>
-            </div>
-          </div>
-
-          <div className="stat-cards">
-            <div className="stat-card" id="stat-card-30">
-              <div className="stat-card-val">
-                {refreshCycle}
-                <span className="stat-unit">sec</span>
-              </div>
-              <div className="stat-card-label">Agent Refresh Cycle</div>
-              <div className="stat-card-desc">Autonomous AI loop frequency — faster than any human operator</div>
-            </div>
-            <div className="stat-card featured" id="stat-card-23m">
-              <div className="stat-card-val">
-                {passengersCount}
-                <span className="stat-unit">M+</span>
-              </div>
-              <div className="stat-card-label">Daily Passengers Impacted</div>
-              <div className="stat-card-desc">Every one of them deserves real-time information</div>
-            </div>
-            <div className="stat-card" id="stat-card-13k">
-              <div className="stat-card-val">
-                {trainsCount.toLocaleString()}
-                <span className="stat-unit">+</span>
-              </div>
-              <div className="stat-card-label">Trains Trackable</div>
-              <div className="stat-card-desc">India's entire active rail network, live on one platform</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* TEAM SECTION */}
-      <section className="team-section section" id="team">
-        <div className="container">
-          <div className="hackathon-banner reveal">
-            <div className="hackathon-icon">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            </div>
-            <div className="hackathon-text">
-              <span className="hackathon-label">Built at</span>
-              <span className="hackathon-name">FAR AWAY 2026</span>
-              <span className="hackathon-sub">India's Biggest International Hackathon</span>
-            </div>
-          </div>
-
-          <div className="section-eyebrow reveal" style={{ marginTop: '3rem' }}>THE BUILDERS</div>
-          <h2 className="section-title reveal">Meet the <span className="gradient-text">Team.</span></h2>
-
-          <div className="team-cards">
-            <div className="team-card reveal" id="team-card-1">
-              <div className="team-avatar">
-                <div className="avatar-initials">RS</div>
-              </div>
-              <div className="team-info">
-                <h3 className="team-name">Rahul Sharma</h3>
-                <div className="team-role">Full-Stack Lead</div>
-                <div className="team-college">IIT Bombay</div>
-              </div>
-              <div className="team-tags">
-                <span className="team-tag">Next.js</span>
-                <span className="team-tag">System Design</span>
-              </div>
-            </div>
-            <div className="team-card reveal" id="team-card-2">
-              <div className="team-avatar" style={{ '--av-color': '#F59E0B' } as React.CSSProperties}>
-                <div className="avatar-initials">PK</div>
-              </div>
-              <div className="team-info">
-                <h3 className="team-name">Priya Krishnan</h3>
-                <div className="team-role">AI / ML Engineer</div>
-                <div className="team-college">NIT Trichy</div>
-              </div>
-              <div className="team-tags">
-                <span className="team-tag">Claude AI</span>
-                <span className="team-tag">Agent Design</span>
-              </div>
-            </div>
-            <div className="team-card reveal" id="team-card-3">
-              <div className="team-avatar" style={{ '--av-color': '#3b82f6' } as React.CSSProperties}>
-                <div className="avatar-initials">AM</div>
-              </div>
-              <div className="team-info">
-                <h3 className="team-name">Arjun Mehta</h3>
-                <div className="team-role">Backend & DevOps</div>
-                <div className="team-college">BITS Pilani</div>
-              </div>
-              <div className="team-tags">
-                <span className="team-tag">Node.js</span>
-                <span className="team-tag">PostgreSQL</span>
-              </div>
-            </div>
-            <div className="team-card reveal" id="team-card-4">
-              <div className="team-avatar" style={{ '--av-color': '#22c55e' } as React.CSSProperties}>
-                <div className="avatar-initials">SN</div>
-              </div>
-              <div className="team-info">
-                <h3 className="team-name">Sneha Nair</h3>
-                <div className="team-role">UI/UX & Frontend</div>
-                <div className="team-college">IIIT Hyderabad</div>
-              </div>
-              <div className="team-tags">
-                <span className="team-tag">Design</span>
-                <span className="team-tag">PWA</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* FOOTER */}
       <footer className="footer" id="footer">
         <div className="footer-glow"></div>
@@ -1384,9 +1165,7 @@ export default function LandingPage() {
             </div>
             <div className="footer-links-group">
               <h4>Hackathon</h4>
-              <a href="#team">Meet the Team</a>
               <a href="#how-it-works">How It Works</a>
-              <a href="#tech">Tech Stack</a>
             </div>
             <div className="footer-links-group">
               <h4>Connect</h4>
