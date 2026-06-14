@@ -157,12 +157,12 @@ function TrackContent() {
   }
 
   return (
-    <div className="min-h-screen bg-bg-primary text-text-primary flex flex-col pt-14">
+    <div className="h-screen bg-bg-primary text-text-primary flex flex-col pt-14 overflow-hidden">
       <Navbar />
 
-      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden h-[calc(100vh-3.5rem)]">
+      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
         {/* Left Panel: Train Search and List */}
-        <div className="w-full lg:w-80 border-r border-border bg-bg-secondary/40 flex flex-col flex-shrink-0">
+        <div className="w-full lg:w-80 h-[35vh] lg:h-full border-r border-border bg-bg-secondary/40 flex flex-col flex-shrink-0">
           <div className="p-4 border-b border-border">
             <h1 className="text-lg font-bold tracking-tight mb-2">Live Train Operations</h1>
             <div className="relative">
@@ -248,7 +248,7 @@ function TrackContent() {
         </div>
 
         {/* Right Panel: Selected Train Details */}
-        <div className="w-full lg:w-96 border-l border-border bg-bg-secondary/40 flex flex-col flex-shrink-0">
+        <div className="w-full lg:w-96 h-[40vh] lg:h-full border-l border-border bg-bg-secondary/40 flex flex-col flex-shrink-0">
           {selectedTrainNum ? (
             loadingDetail && !trainDetail ? (
               <div className="flex-1 flex flex-col items-center justify-center p-8">
