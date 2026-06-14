@@ -18,6 +18,7 @@ export default function LandingPage() {
   const [pnrQuery, setPnrQuery] = useState('')
   const [searchError, setSearchError] = useState('')
   const [liveTrainsCount, setLiveTrainsCount] = useState<number | null>(null)
+  const [user, setUser] = useState<any>(null)
 
   function handleTrainSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -36,8 +37,17 @@ export default function LandingPage() {
     router.push(`/track/pnr?pnr=${trimmed}`)
   }
 
-  // Fetch live active trains count
+  // Fetch live active trains count & user session
   useEffect(() => {
+    const stored = localStorage.getItem('railsense_user')
+    if (stored) {
+      try {
+        setUser(JSON.parse(stored))
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
     async function fetchLiveStats() {
       try {
         const res = await trainsApi.getAll()
@@ -349,8 +359,39 @@ export default function LandingPage() {
             <a href="#how-it-works" className="nav-link" onClick={() => setMobileMenuOpen(false)}>How It Works</a>
             <a href="#tech" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Tech</a>
             <a href="#team" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Team</a>
-            <Link href="/login" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Login</Link>
-            <Link href="/track" className="nav-link nav-cta" onClick={() => setMobileMenuOpen(false)}>Launch Console</Link>
+            {user ? (
+              <>
+                <Link
+                  href={user.role === 'STATION_MASTER' ? '/dashboard' : '/track'}
+                  className="nav-link"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {user.role === 'STATION_MASTER' ? 'Dashboard' : 'Console'}
+                </Link>
+                <button
+                  onClick={() => {
+                    localStorage.removeItem('railsense_token')
+                    localStorage.removeItem('railsense_user')
+                    setUser(null)
+                    setMobileMenuOpen(false)
+                    window.location.reload()
+                  }}
+                  className="nav-link"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', width: 'auto', padding: 0 }}
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link href="/login" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Login</Link>
+            )}
+            <Link
+              href={user ? (user.role === 'STATION_MASTER' ? '/dashboard' : '/track') : '/track'}
+              className="nav-link nav-cta"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              {user ? 'Go to Console' : 'Launch Console'}
+            </Link>
           </div>
           <button 
             className={`nav-toggle ${mobileMenuOpen ? 'active' : ''}`} 

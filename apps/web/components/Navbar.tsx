@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 const NAV_LINKS = [
+  { href: '/', label: 'Home' },
   { href: '/track', label: 'Live Map' },
   { href: '/track/pnr', label: 'PNR Lookup' },
   { href: '/dashboard', label: 'Dashboard', protected: true },
@@ -32,7 +33,7 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-bg-primary/90 backdrop-blur-md border-b border-border">
       <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/track" className="flex items-center gap-2 font-bold text-lg">
+        <Link href="/" className="flex items-center gap-2 font-bold text-lg">
           <div className="w-7 h-7 bg-accent-red rounded-md flex items-center justify-center">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
               <path d="M3 12h18M3 8h18M3 16h18"/>
@@ -51,7 +52,7 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-1">
           {NAV_LINKS.map((link) => {
             if (link.protected && (!user || user.role !== 'STATION_MASTER')) return null
-            const active = pathname.startsWith(link.href)
+            const active = link.href === '/' ? pathname === '/' : pathname.startsWith(link.href)
             return (
               <Link
                 key={link.href}
@@ -115,12 +116,17 @@ export default function Navbar() {
         <div className="md:hidden border-t border-border bg-bg-secondary px-4 py-3 flex flex-col gap-1">
           {NAV_LINKS.map((link) => {
             if (link.protected && (!user || user.role !== 'STATION_MASTER')) return null
+            const active = link.href === '/' ? pathname === '/' : pathname.startsWith(link.href)
             return (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className="px-3 py-2 rounded-lg text-sm text-text-muted hover:text-text-primary hover:bg-bg-primary transition-colors"
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  active
+                    ? 'bg-accent-red/10 text-accent-red border border-accent-red/20'
+                    : 'text-text-muted hover:text-text-primary hover:bg-bg-primary'
+                }`}
               >
                 {link.label}
               </Link>
