@@ -307,13 +307,6 @@ export default function LandingPage() {
 
             {user ? (
               <>
-                <Link
-                  href={user.role === 'STATION_MASTER' ? '/dashboard' : '/track'}
-                  className="nav-link"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {user.role === 'STATION_MASTER' ? 'Dashboard' : 'Console'}
-                </Link>
                 <button
                   onClick={() => {
                     localStorage.removeItem('railsense_token')
@@ -332,7 +325,7 @@ export default function LandingPage() {
                   className="nav-link nav-cta"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Go to Console
+                  {user.role === 'STATION_MASTER' ? 'Go to Dashboard' : 'Go to Console'}
                 </Link>
               </>
             ) : (
@@ -570,7 +563,7 @@ export default function LandingPage() {
                 id="see-demo-btn"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16"/></svg>
-                Go to Console
+                {user.role === 'STATION_MASTER' ? 'Go to Dashboard' : 'Go to Console'}
               </Link>
             ) : (
               <Link href="/login" className="btn-primary" id="see-demo-btn">
