@@ -382,12 +382,9 @@ export default function LandingPage() {
           </svg>
         </div>
 
-        <div className="hero-content">
+        <div className="
+        hero-content">
           <div className="flex flex-wrap gap-3 justify-center mb-6">
-            <div className="hero-badge">
-              <span className="badge-dot"></span>
-              FAR AWAY 2026 — India's Biggest International Hackathon
-            </div>
             {liveTrainsCount !== null && (
               <div className="hero-badge" style={{ backgroundColor: 'rgba(16, 185, 129, 0.08)', borderColor: 'rgba(16, 185, 129, 0.25)', color: '#10B981' }}>
                 <span className="badge-dot" style={{ backgroundColor: '#10B981' }}></span>
@@ -1157,7 +1154,7 @@ export default function LandingPage() {
               <a href="#solution">Passenger PWA</a>
             </div>
             <div className="footer-links-group">
-              <h4>Hackathon</h4>
+              <h4>Resources</h4>
               <a href="#how-it-works">How It Works</a>
             </div>
             <div className="footer-links-group">
@@ -1169,7 +1166,6 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="footer-bottom">
-            <p className="footer-hackathon-badge">🏆 Built for <strong>FAR AWAY 2026</strong> — India's Biggest International Hackathon</p>
             <p className="footer-copy">© 2026 RailSense. All rights reserved.</p>
           </div>
         </div>

@@ -1022,11 +1022,6 @@
   flex-wrap: wrap;
   gap: 1rem;
 }
-.footer-hackathon-badge {
-  font-size: 0.82rem;
-  color: var(--text-muted);
-}
-.footer-hackathon-badge strong { color: var(--amber); }
 .footer-copy { font-size: 0.78rem; color: var(--text-dim); }
 
 /* ===== RESPONSIVE ===== */
