@@ -134,14 +134,6 @@ RailSense operates on an SQLite database configured through Prisma (`apps/server
 
 3. **Configure Environment Variables**:
    Create a `.env` file in `apps/server/` or customize the existing one. Default values:
-   ```env
-   DATABASE_URL="file:./prisma/railsense.db"
-   JWT_SECRET="railsense-jwt-secret-change-in-prod-2026"
-   PORT=3001
-   FRONTEND_URL="http://localhost:3000"
-   USE_OLLAMA="false"  # Change to "true" if you have Ollama running
-   OLLAMA_URL="http://localhost:11434"
-   ```
 
 4. **Initialize and Seed the Database**:
    Run the setup script which applies migrations, generates the Prisma Client, and seeds mock railway stations, trains, routes, and user accounts:
