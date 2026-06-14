@@ -268,7 +268,7 @@ async function seed() {
     const dests = routeStops.slice(1).map(s => s[0])
 
     for (let p = 0; p < 3; p++) {
-      const pnrNumber = `${t.number}${(p + 1).toString().padStart(4, '0')}`
+      const pnrNumber = `${t.number}${(p + 1).toString().padStart(5, '0')}`
       const coachNum = Math.floor(Math.random() * 8) + 1
       const seatNum = Math.floor(Math.random() * 72) + 1
       const cls = CLASSES[Math.floor(Math.random() * CLASSES.length)]
@@ -325,7 +325,7 @@ async function seed() {
   console.log('  📧 passenger@railsense.com / password123  (Passenger)')
   console.log('\nSample PNR numbers to try:')
   TRAINS.forEach(t => {
-    console.log(`  ${t.name}: ${t.number}0001, ${t.number}0002, ${t.number}0003`)
+    console.log(`  ${t.name}: ${t.number}00001, ${t.number}00002, ${t.number}00003`)
   })
   console.log('─────────────────────────────────────────────\n')
 }

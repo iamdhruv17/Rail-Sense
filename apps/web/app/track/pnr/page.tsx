@@ -35,7 +35,7 @@ function PnrContent() {
       const res = await pnrApi.lookup(pnrVal.trim())
       setPnrData(res.data)
     } catch (err: any) {
-      setError(err.response?.data?.error || 'PNR not found. Try PNR: 129510001')
+      setError(err.response?.data?.error || 'PNR not found. Try PNR: 1295100001')
       setPnrData(null)
     } finally {
       setLoading(false)
@@ -72,7 +72,7 @@ function PnrContent() {
               maxLength={10}
               value={pnrNumber}
               onChange={(e) => setPnrNumber(e.target.value.replace(/\D/g, ''))}
-              placeholder="e.g. 129510001"
+              placeholder="e.g. 1295100001"
               className="flex-1 bg-bg-secondary border border-border rounded-lg px-4 py-2.5 text-sm text-text-primary focus:outline-none focus:border-accent-red/50 transition-colors"
             />
             <button
@@ -85,9 +85,9 @@ function PnrContent() {
           </form>
 
           <div className="text-xs text-text-dim">
-            Demo PNRs: <code className="bg-bg-secondary px-1.5 py-0.5 rounded text-text-muted">129510001</code>,{' '}
-            <code className="bg-bg-secondary px-1.5 py-0.5 rounded text-text-muted">123010001</code>,{' '}
-            <code className="bg-bg-secondary px-1.5 py-0.5 rounded text-text-muted">120020001</code>
+            Demo PNRs: <code className="bg-bg-secondary px-1.5 py-0.5 rounded text-text-muted">1295100001</code>,{' '}
+            <code className="bg-bg-secondary px-1.5 py-0.5 rounded text-text-muted">1230100001</code>,{' '}
+            <code className="bg-bg-secondary px-1.5 py-0.5 rounded text-text-muted">1200200001</code>
           </div>
         </div>
 

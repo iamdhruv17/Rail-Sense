@@ -29,8 +29,8 @@ export default function LandingPage() {
     e.preventDefault()
     const trimmed = pnrQuery.trim()
     if (!trimmed) return
-    if (trimmed.length !== 9 && trimmed.length !== 10) {
-      setSearchError('PNR number must be 9 or 10 digits')
+    if (trimmed.length !== 10) {
+      setSearchError('PNR number must be 10 digits')
       return
     }
     router.push(`/track/pnr?pnr=${trimmed}`)
@@ -534,7 +534,7 @@ export default function LandingPage() {
                     <input
                       type="text"
                       maxLength={10}
-                      placeholder="e.g. 129510001"
+                      placeholder="e.g. 1295100001"
                       value={pnrQuery}
                       onChange={(e) => setPnrQuery(e.target.value.replace(/\D/g, ''))}
                       style={{
@@ -569,7 +569,7 @@ export default function LandingPage() {
                 </div>
                 {searchError && <p style={{ fontSize: '11px', color: '#E8213B', fontWeight: 600, margin: 0 }}>{searchError}</p>}
                 <div style={{ fontSize: '10px', color: 'rgba(240,244,255,0.4)' }}>
-                  Try seeded PNRs: <span style={{ textDecoration: 'underline', cursor: 'pointer', color: '#F0F4FF' }} onClick={() => setPnrQuery('129510001')}>129510001</span> or <span style={{ textDecoration: 'underline', cursor: 'pointer', color: '#F0F4FF' }} onClick={() => setPnrQuery('123010001')}>123010001</span>
+                  Try seeded PNRs: <span style={{ textDecoration: 'underline', cursor: 'pointer', color: '#F0F4FF' }} onClick={() => setPnrQuery('1295100001')}>1295100001</span> or <span style={{ textDecoration: 'underline', cursor: 'pointer', color: '#F0F4FF' }} onClick={() => setPnrQuery('1230100001')}>1230100001</span>
                 </div>
               </form>
             )}
