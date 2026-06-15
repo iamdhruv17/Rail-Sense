@@ -43,7 +43,7 @@ graph TD
     Cron --> Sim
     Cron --> Cascade
     Cascade --> Reason
-    Reason --> Ollama
+    Reason --> Gemini
     Reason --> Fallback
     Cron --> Socket
     Socket -.->|Telemetry & Alerts| Map
