@@ -64,7 +64,7 @@ graph TD
 * **Cascade Risk Analysis**: Evaluates downstream impacts of delays by monitoring upcoming stations. If a delayed train's estimated time of arrival (ETA) overlaps with another train on the same platform within a 20-minute window, the system flags a **Platform Conflict** or **Cascade Risk**.
 
 ### 3. AI-Powered Decision Support
-* **Gemini Integration : Calls gemini 2.5-flash model to generate plain-English explanations (Reasoning) and actionable dispatch adjustments (Suggestions) for the station master.
+* Gemini Integration : Calls gemini 2.5-flash model to generate plain-English explanations (Reasoning) and actionable dispatch adjustments (Suggestions) for the station master.
 * **Resilient Fallback**: Automatically falls back to a deterministic rule-based expert system if the Ollama endpoint is offline or times out.
 
 ### 4. Passenger Services
